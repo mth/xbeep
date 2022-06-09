@@ -34,7 +34,7 @@ static int beep(int percent, int pitch, int duration) {
 		err = snd_pcm_set_params(handle,
 				((char*) &test_endian) ? SND_PCM_FORMAT_S16_LE
 				                       : SND_PCM_FORMAT_S16_BE,
-							                        SND_PCM_ACCESS_RW_INTERLEAVED,
+	            SND_PCM_ACCESS_RW_INTERLEAVED,
 				1, sample_rate, 1, 200000); // 1 channel, latency 200ms
 	if (err < 0) {
 		syslog(LOG_ERR, "ALSA device %s open error: %s\n",
