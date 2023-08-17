@@ -1,0 +1,14 @@
+Listens for XkbBellNotify events and plays corresponding beeps via ALSA device.
+
+Xwayland and some Xorg configurations seem to be unable to play beeps on their own.
+
+This utility plays beeps directly to default ALSA device, so beeps can be played
+on any system where ALSA configuration works. Sound servers like pulseaudio or
+pipewire usually implement ALSA plugin, so these should work as well.
+
+The X bells are used for example by OCaml Graphics modules sound function.
+
+The asound2 and x11 libraries are needed for compilation
+(on Debian run apt install libasound2-dev libx11-dev).
+
+Compilation: sh xbell.c

@@ -57,7 +57,7 @@ static int beep(int percent, int pitch, int duration) {
 
     for (int i = 0; i < sample_count; ++i) {
         buffer[i] = amplitude * sin(i * sample_step);
-	//printf("%d\n", buffer[i]);
+        //printf("%d\n", buffer[i]);
     }
 
     long frame_count = (long) duration * sample_rate / 1000;
@@ -121,6 +121,10 @@ static Display* open_display() {
 }
 
 int main(int argc, const char** argv) {
+    if (argc > 1 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))) {
+        puts("xbeep\n\nListens for XkbBellNotify events and plays beeps via ALSA device");
+        return 1;
+    }
     openlog("xbeep", LOG_PID, LOG_USER);
 
     Display *dpy = open_display();
