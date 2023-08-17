@@ -11,4 +11,4 @@ The X bells are used for example by OCaml Graphics modules sound function.
 The asound2 and x11 libraries are needed for compilation
 (on Debian run apt install libasound2-dev libx11-dev).
 
-Compilation: sh xbell.c
+Compilation: sh xbeep.c
