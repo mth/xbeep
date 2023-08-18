@@ -49,8 +49,8 @@ static int beep(int percent, int pitch, int duration) {
     }
 
     if (duration > duration_limit) {
-        syslog(LOG_INFO, "Limiting bell duration %d to %d",
-                         duration, duration_limit);
+        syslog(LOG_DEBUG, "Limiting bell duration %d to %d",
+                          duration, duration_limit);
         duration = duration_limit;
     }
     if (percent > 100) {
