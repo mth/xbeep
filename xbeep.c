@@ -23,9 +23,8 @@ static int beep(int percent, int pitch, int duration) {
     unsigned test_endian = 1;
     snd_pcm_format_t fmt = ((char*) &test_endian) ? SND_PCM_FORMAT_S16_LE : SND_PCM_FORMAT_S16_BE;
 
-    if (pitch <= 20 || pitch >= 20000 || percent <= 0 || duration <= 0) {
+    if (pitch <= 20 || pitch >= 20000 || percent <= 0 || duration <= 0)
         return 1; // don't try to play unplayable bells
-    }
 
     // https://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_min_8c-example.html
     // https://alexvia.com/post/003_alsa_playback/
@@ -53,9 +52,9 @@ static int beep(int percent, int pitch, int duration) {
                           duration, duration_limit);
         duration = duration_limit;
     }
-    if (percent > 100) {
+    if (percent > 100)
         percent = 100;
-    }
+
     double amplitude = 327.67 * percent;
     double sample_step = (double) pitch / (double) sample_rate;
     int sample_count = round(round(MAX_SAMPLES * sample_step - 1) / sample_step);
@@ -70,9 +69,8 @@ static int beep(int percent, int pitch, int duration) {
     do {
         uint16_t *buf_p = buffer;
         snd_pcm_uframes_t have_frames = sample_count;
-        if (have_frames > (unsigned long) frame_count) {
+        if (have_frames > (unsigned long) frame_count)
             have_frames = frame_count;
-        }
         //printf("amplitude=%lf step=1/%lf sample_count=%d frame_count=%ld have_frames=%ld\n",
         //   amplitude, 1/sample_step, sample_count, frame_count, have_frames);
 
@@ -149,9 +147,8 @@ int main(int argc, const char** argv) {
 
     int controls = XkbAudibleBellMask;
     int values = XkbAudibleBellMask;
-    if (!XkbSetAutoResetControls(dpy, XkbAudibleBellMask, &controls, &values)) {
+    if (!XkbSetAutoResetControls(dpy, XkbAudibleBellMask, &controls, &values))
         fputs("XkbSetAutoResetControls(XkbAudibleBellMask) failed\n", stderr);
-    }
 
     for (XkbEvent ev;;) {
         XNextEvent(dpy, &ev.core);
