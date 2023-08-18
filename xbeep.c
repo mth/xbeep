@@ -57,7 +57,12 @@ static int beep(int percent, int pitch, int duration) {
 
     double amplitude = 327.67 * percent;
     double sample_step = (double) pitch / (double) sample_rate;
+    long frame_count = (long) duration * sample_rate / 1000;
     int sample_count = round(round(MAX_SAMPLES * sample_step - 1) / sample_step);
+
+    if (sample_count > frame_count)
+	sample_count = frame_count;
+
     sample_step *= 2 * M_PI;
 
     for (int i = 0; i < sample_count; ++i) {
@@ -65,7 +70,6 @@ static int beep(int percent, int pitch, int duration) {
         //printf("%d\n", buffer[i]);
     }
 
-    long frame_count = (long) duration * sample_rate / 1000;
     do {
         uint16_t *buf_p = buffer;
         snd_pcm_uframes_t have_frames = sample_count;
