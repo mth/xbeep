@@ -59,7 +59,8 @@ static int beep(int percent, int pitch, int duration) {
     int sample_count = round(round(MAX_SAMPLES * sample_step - 1) / sample_step);
     // approximate frame_count to half periods to avoid pop at the end
     double half_step = sample_step * 2;
-    long frame_count = round(round(duration * sample_rate / 1000.0 * half_step) / half_step);
+    long frame_count = round(round(
+        (long) duration * sample_rate / 1000.0 * half_step) / half_step);
 
     if (sample_count > frame_count)
 	sample_count = frame_count;
