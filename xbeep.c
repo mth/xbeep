@@ -1,5 +1,5 @@
 #if 0
-cc -o xbeep -W -Os $0 -lX11 -lasound -lm
+cc -o xbeep -W -O3 $0 -lX11 -lasound -lm
 exit $?
 #endif
 
