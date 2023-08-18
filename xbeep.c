@@ -57,7 +57,9 @@ static int beep(int percent, int pitch, int duration) {
 
     double amplitude = 327.67 * percent;
     double sample_step = (double) pitch / (double) sample_rate;
-    long frame_count = (long) duration * sample_rate / 1000;
+    // approximate frame_count to half periods to avoid pop at the end
+    double half_step = sample_step * 2;
+    long frame_count = round(round(duration * sample_rate / 1000 * half_step) / half_step);
     int sample_count = round(round(MAX_SAMPLES * sample_step - 1) / sample_step);
 
     if (sample_count > frame_count)
@@ -75,8 +77,8 @@ static int beep(int percent, int pitch, int duration) {
         snd_pcm_uframes_t have_frames = sample_count;
         if (have_frames > (unsigned long) frame_count)
             have_frames = frame_count;
-        //printf("amplitude=%lf step=1/%lf sample_count=%d frame_count=%ld have_frames=%ld\n",
-        //   amplitude, 1/sample_step, sample_count, frame_count, have_frames);
+        // printf("amplitude=%lf step=1/%lf sample_count=%d frame_count=%ld have_frames=%ld\n",
+        //        amplitude, 1/sample_step, sample_count, frame_count, have_frames);
 
         while (err >= 0 && have_frames > 0) {
             // frames sent to ALSA
