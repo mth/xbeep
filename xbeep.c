@@ -55,17 +55,17 @@ static int beep(int percent, int pitch, int duration) {
     if (percent > 100)
         percent = 100;
 
-    double amplitude = 327.67 * percent;
     double sample_step = (double) pitch / (double) sample_rate;
+    int sample_count = round(round(MAX_SAMPLES * sample_step - 1) / sample_step);
     // approximate frame_count to half periods to avoid pop at the end
     double half_step = sample_step * 2;
     long frame_count = round(round(duration * sample_rate / 1000 * half_step) / half_step);
-    int sample_count = round(round(MAX_SAMPLES * sample_step - 1) / sample_step);
 
     if (sample_count > frame_count)
 	sample_count = frame_count;
 
     sample_step *= 2 * M_PI;
+    double amplitude = 327.67 * percent;
 
     for (int i = 0; i < sample_count; ++i) {
         buffer[i] = amplitude * sin(i * sample_step);
