@@ -14,7 +14,8 @@ exit $?
 #define MAX_SAMPLES 8192
 
 static const char *alsa_device = "default";
-static unsigned sample_rate = 48000;
+static const unsigned sample_rate = 48000;
+static const int duration_limit = 20000; // 20 seconds
 static int xkb_event_code;
 
 static int beep(int percent, int pitch, int duration) {
@@ -23,7 +24,7 @@ static int beep(int percent, int pitch, int duration) {
     snd_pcm_format_t fmt = ((char*) &test_endian) ? SND_PCM_FORMAT_S16_LE : SND_PCM_FORMAT_S16_BE;
 
     if (pitch <= 20 || pitch >= 20000 || percent <= 0 || duration <= 0) {
-        return 1;
+        return 1; // don't try to play unplayable bells
     }
 
     // https://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_min_8c-example.html
@@ -47,6 +48,11 @@ static int beep(int percent, int pitch, int duration) {
         return 0;
     }
 
+    if (duration > duration_limit) {
+        syslog(LOG_INFO, "Limiting bell duration %d to %d",
+                         duration, duration_limit);
+        duration = duration_limit;
+    }
     if (percent > 100) {
         percent = 100;
     }
