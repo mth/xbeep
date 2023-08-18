@@ -23,7 +23,7 @@ static int beep(int percent, int pitch, int duration) {
     unsigned test_endian = 1;
     snd_pcm_format_t fmt = ((char*) &test_endian) ? SND_PCM_FORMAT_S16_LE : SND_PCM_FORMAT_S16_BE;
 
-    if (pitch <= 20 || pitch >= 20000 || percent <= 0 || duration <= 0)
+    if (pitch <= 20 || pitch >= 20000 || percent <= 0 || duration <= 1000 / pitch)
         return 1; // don't try to play unplayable bells
 
     // https://www.alsa-project.org/alsa-doc/alsa-lib/_2test_2pcm_min_8c-example.html
