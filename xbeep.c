@@ -1,5 +1,5 @@
 #if 0
-cc -o xbeep -W -O3 $0 -lX11 -lasound -lm
+cc -o xbeep -W -O3 $0 -lX11 -lasound -lm && strip --strip-all xbeep
 exit $?
 #endif
 
@@ -17,9 +17,10 @@ static const char *alsa_device = "default";
 static const unsigned sample_rate = 48000;
 static const int duration_limit = 20000; // 20 seconds
 static int xkb_event_code;
+static int16_t buffer[MAX_SAMPLES];
+static unsigned long old_key;
 
 static int beep(int percent, int pitch, int duration) {
-    int16_t buffer[MAX_SAMPLES];
     unsigned test_endian = 1;
     snd_pcm_format_t fmt = ((char*) &test_endian) ? SND_PCM_FORMAT_S16_LE : SND_PCM_FORMAT_S16_BE;
 
@@ -63,14 +64,19 @@ static int beep(int percent, int pitch, int duration) {
         (long) duration * sample_rate / 1000.0 * half_step) / half_step);
 
     if (sample_count > frame_count)
-	sample_count = frame_count;
+        sample_count = frame_count;
 
-    sample_step *= 2 * M_PI;
-    double amplitude = 327.67 * percent;
+    unsigned long key = (unsigned) percent ^ ((unsigned) sample_count << 16)
+                                           ^ ((unsigned long) pitch << 32);
+    if (key != old_key) {
+        sample_step *= 2 * M_PI;
+        double amplitude = 327.67 * percent;
 
-    for (int i = 0; i < sample_count; ++i) {
-        buffer[i] = amplitude * sin(i * sample_step);
-        //printf("%d\n", buffer[i]);
+        for (int i = 0; i < sample_count; ++i) {
+            buffer[i] = amplitude * sin(i * sample_step);
+            //printf("%d\n", buffer[i]);
+        }
+        old_key = key;
     }
 
     do {
